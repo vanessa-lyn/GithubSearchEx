@@ -5,9 +5,8 @@ $(function ($) {
 
     "use strict";
 
-    //adding the css and js to the page here on the requirement to not edit index.html
+    //adding the css to the page here on the requirement to not edit index.html
     $('head').append("<link href='styles.css' rel='stylesheet' type='text/css'>");
-    //$('body').append("<script src='jquery.cookie.js' type='text/javascript'></script>");
     /////////////////////
 
     var DEBUG = true
@@ -18,10 +17,6 @@ $(function ($) {
         , search = $('#search')
         , cachedObj = {}
         ;
-        // var storedData = $.cookie('storedData')
-        // if($.cookie('storedData')){
-        //   alert($.cookie('storedData'));
-        // }
 
     function grabNewKeywordData(newKey) {
         $.ajax({
@@ -34,7 +29,6 @@ $(function ($) {
         if (saved === false) {
             if (DEBUG) { console.log('unsaved'); }
             cachedObj[gitKeyword] = data;
-            //$.cookie('storedData', cachedObj);
         }
 
         jsonData = data.repositories;
