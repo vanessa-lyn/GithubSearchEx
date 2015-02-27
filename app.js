@@ -1,86 +1,93 @@
-$(function($){
-  $('body').append('sdfsd');
-  $('body').append("<script src='jquery.cookie.js' type='text/javascript'></script>");
+/*jslint browser: true, devel: true, white: true */
+/*global $, jQuery, alert*/
 
-  var gitKeyword;
-  var jsonData;
-  var saved = false;
-  var resultContainer = $('#results');
-  var search = $('#search');
-  var cachedObj = {};
-  //var storedData = $.cookie('storedData')
-  // if($.cookie('storedData')){
-  //   alert($.cookie('storedData'));
-  // }
+$(function ($) {
 
+    "use strict";
 
-  function checkKeyword(currentKeyword){
-      if(cachedObj[currentKeyword]){
-        console.log('exists');
-        saved = true;
-        //display data stored from object
-        displayData(cachedObj[currentKeyword]);
-      }
-      else{
-        saved = false;
-        grabNewKeywordData(currentKeyword); 
-      }  
-  }
+    //adding the css and js to the page here on the requirement to not edit index.html
+    $('head').append("<link href='styles.css' rel='stylesheet' type='text/css'>");
+    //$('body').append("<script src='jquery.cookie.js' type='text/javascript'></script>");
+    /////////////////////
 
-  function grabNewKeywordData(newKey){
-     $.ajax({
-        url: "https://api.github.com/legacy/repos/search/"+newKey, 
-        success : displayData
-    })
-  }
+    var DEBUG = true
+        , gitKeyword
+        , jsonData
+        , saved = false
+        , resultContainer = $('#results')
+        , search = $('#search')
+        , cachedObj = {}
+        ;
+        // var storedData = $.cookie('storedData')
+        // if($.cookie('storedData')){
+        //   alert($.cookie('storedData'));
+        // }
 
-  function displayData(data) {
-    if(saved === false){
-      console.log('unsaved');  
-      cachedObj[gitKeyword] = data;
-      //$.cookie('storedData', cachedObj);
-
+    function grabNewKeywordData(newKey) {
+        $.ajax({
+            url: "https://api.github.com/legacy/repos/search/" + newKey,
+            success : displayData
+        });
     }
-    jsonData = data.repositories;
 
-    console.log(jsonData.length);
-    var currentData = "<ul>";
-    currentData += "<li><b>Owner / Name</b></li>";
-   
-    $.each(jsonData, function(index){
-        currentData += "<li><a href='#' index='"+index+"'>";
-        currentData += jsonData[index].owner;
-        currentData += " / ";
-        currentData += jsonData[index].name;
-        currentData += "</a></li>";
-    });
-    currentData += "</ul>";
-    resultContainer.html(currentData);
-  }
-
-  search.bind('keypress', function(e) {
-      var code = (e.keyCode ? e.keyCode : e.which);
-      if(code == 13) {
-        gitKeyword = $('#search').val();
-        resultContainer.html('');
-        checkKeyword(gitKeyword);
-      }  
-  });
-
-  resultContainer.on({
-        click: function(){
-          var current = $(this).attr('index')
-          var details = "Language: "+jsonData[current].language+"\n";
-          details += "Followers: "+jsonData[current].followers+"\n";
-          details += "Url: "+jsonData[current].url+"\n";
-          details += "Description: "+jsonData[current].description;
-          alert(details);
+    function displayData(data) {
+        if (saved === false) {
+            if (DEBUG) { console.log('unsaved'); }
+            cachedObj[gitKeyword] = data;
+            //$.cookie('storedData', cachedObj);
         }
-    },'li a');
 
-  
-  
+        jsonData = data.repositories;
+
+        if (DEBUG) { console.log(jsonData.length); }
+
+        var currentData = "<ul>";
+        currentData += "<li><b>Owner / Name</b></li>";
+
+        $.each(jsonData, function (index) {
+            currentData += "<li><a href='#' index='" + index + "'>";
+            currentData += jsonData[index].owner;
+            currentData += " / ";
+            currentData += jsonData[index].name;
+            currentData += "</a></li>";
+        });
+
+        currentData += "</ul>";
+        resultContainer.html(currentData);
+    }
+
+    function checkKeyword(currentKeyword) {
+        if (cachedObj[currentKeyword]) {
+            if (DEBUG) { console.log('exists'); }
+            saved = true;
+            //display data stored from object
+            displayData(cachedObj[currentKeyword]);
+        } 
+        else {
+            saved = false;
+            grabNewKeywordData(currentKeyword); 
+        }
+    }
+
+    search.bind('keypress', function (e) {
+        var code = e.keyCode || e.which;
+        if (code === 13) {
+            gitKeyword = $('#search').val();
+            resultContainer.html('');
+            checkKeyword(gitKeyword);
+        }
+    });
+
+    resultContainer.on({
+        click: function () {
+            var current = $(this).attr('index')
+                , details = "Language: " + jsonData[current].language + "\n";
+
+            details += "Followers: " + jsonData[current].followers + "\n";
+            details += "Url: " + jsonData[current].url + "\n";
+            details += "Description: " + jsonData[current].description;
+            alert(details);
+        }
+    }, 'li a');
 
 });
-
-
