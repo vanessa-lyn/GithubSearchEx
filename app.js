@@ -15,6 +15,7 @@ $(function ($) {
         , saved = false
         , resultContainer = $('#results')
         , search = $('#search')
+        , searchMessage = 'Input Github Search Term and Click Enter'
         , cachedObj = {}
         ;
 
@@ -36,9 +37,12 @@ $(function ($) {
         if (DEBUG) { console.log(jsonData.length); }
 
         var currentData = "<ul>";
-        currentData += "<li><b>Owner / Name</b></li>";
+        currentData += "<li><b>Author / Repo</b></li>";
 
         $.each(jsonData, function (index) {
+            // $('<li/>', {
+            //     text:  
+            // });
             currentData += "<li><a href='#' index='" + index + "'>";
             currentData += jsonData[index].owner;
             currentData += " / ";
@@ -63,25 +67,40 @@ $(function ($) {
         }
     }
 
-    search.bind('keypress', function (e) {
-        var code = e.keyCode || e.which;
-        if (code === 13) {
-            gitKeyword = $('#search').val();
-            resultContainer.html('');
-            checkKeyword(gitKeyword);
-        }
-    });
+    function initEventListeners() {
+        search.attr('value', searchMessage);
 
-    resultContainer.on({
-        click: function () {
-            var current = $(this).attr('index')
-                , details = "Language: " + jsonData[current].language + "\n";
+        search.on('focus', function () {
+            search.attr('value', ' ');
+        });
+        search.on('blur', function () {
+            if(search.attr('value') === ' ') {
+                search.attr('value', searchMessage);
+            }
+        });
 
-            details += "Followers: " + jsonData[current].followers + "\n";
-            details += "Url: " + jsonData[current].url + "\n";
-            details += "Description: " + jsonData[current].description;
-            alert(details);
-        }
-    }, 'li a');
+        search.bind('keypress', function (e) {
+            var code = e.keyCode || e.which;
+            if (code === 13) {
+                gitKeyword = $('#search').val();
+                resultContainer.html('');
+                checkKeyword(gitKeyword);
+            }
+        });
+
+        resultContainer.on({
+            click: function () {
+                var current = $(this).attr('index')
+                    , details = "Language: " + jsonData[current].language + "\n";
+
+                details += "Followers: " + jsonData[current].followers + "\n";
+                details += "Url: " + jsonData[current].url + "\n";
+                details += "Description: " + jsonData[current].description;
+                alert(details);
+            }
+        }, 'li a');
+    }
+    
+    initEventListeners();
 
 });

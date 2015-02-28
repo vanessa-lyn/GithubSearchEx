@@ -1,0 +1,32 @@
+body {
+    background-color:#126a62;
+    font-family: arial, sans-serif;
+    color: white;
+}
+
+#search, #results {
+    margin: 0 auto;
+    width: 50%;
+    display: block;
+    text-align:center;
+}
+
+#search {
+    margin-top: 10%;
+    margin-bottom: 1em;
+    font-size: 15px;
+    padding: 1em;
+    border-radius: 10px;
+}
+
+#results ul {
+    list-style-type: none;
+    padding: 1em;
+}
+
+#results ul li {
+    padding: .5em;
+}
+a {
+    color: white;
+}
