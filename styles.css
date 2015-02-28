@@ -21,12 +21,21 @@ body {
 
 #results ul {
     list-style-type: none;
+}
+
+.resultsList .list-header{
+    font-weight:bold;
     padding: 1em;
 }
 
-#results ul li {
+.resultsList .listing {
     padding: .5em;
-}
+    cursor: pointer;
+    text-decoration: underline;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 13px;
+    }
 a {
     color: white;
 }

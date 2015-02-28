@@ -33,25 +33,49 @@ $(function ($) {
         }
 
         jsonData = data.repositories;
-
         if (DEBUG) { console.log(jsonData.length); }
 
-        var currentData = "<ul>";
-        currentData += "<li><b>Author / Repo</b></li>";
+        //create a header and display the number of results
+        var $resultsHeader = $('<h2/>', {
+            text: jsonData.length + ' Results for "' + gitKeyword + '"'
+        }).prependTo(resultContainer);
+        
+        // //if no results
+        if (jsonData <= 0) {
+            if (DEBUG) { console.log('no data message'); }
+            //add no results message
+            var $noResults = $('<p/>', {
+                text: 'Try a different search term.'
+            }).appendTo(resultContainer);
+        } 
+        //else print out the results
+        else {
+            var $resultsList = $('<ul/>', {'class': 'resultsList'})
+            .append( $('<li/>', { 'class': 'list-header',  text: 'Author / Repo' }) );
 
-        $.each(jsonData, function (index) {
-            // $('<li/>', {
-            //     text:  
-            // });
-            currentData += "<li><a href='#' index='" + index + "'>";
-            currentData += jsonData[index].owner;
-            currentData += " / ";
-            currentData += jsonData[index].name;
-            currentData += "</a></li>";
-        });
+            $.each(jsonData, function (index) {
+                $resultsList.append ($('<li/>', {
+                    text: jsonData[index].owner + ' / ' + jsonData[index].name,
+                    'class': 'listing',
+                    name: index,
+                    click: showListingDetails
+                }) );
+            })
 
-        currentData += "</ul>";
-        resultContainer.html(currentData);
+            resultContainer.append($resultsList);
+        }
+    }
+
+    function showListingDetails() {
+        var current = $(this).attr('name')
+        , details = "Language: " + jsonData[current].language + "\n";
+
+        if (DEBUG) { console.log(jsonData[current]); }
+
+        details += "Followers: " + jsonData[current].followers + "\n";
+        details += "Url: " + jsonData[current].url + "\n";
+        details += "Description: " + jsonData[current].description;
+        alert(details);
     }
 
     function checkKeyword(currentKeyword) {
@@ -87,18 +111,6 @@ $(function ($) {
                 checkKeyword(gitKeyword);
             }
         });
-
-        resultContainer.on({
-            click: function () {
-                var current = $(this).attr('index')
-                    , details = "Language: " + jsonData[current].language + "\n";
-
-                details += "Followers: " + jsonData[current].followers + "\n";
-                details += "Url: " + jsonData[current].url + "\n";
-                details += "Description: " + jsonData[current].description;
-                alert(details);
-            }
-        }, 'li a');
     }
     
     initEventListeners();
