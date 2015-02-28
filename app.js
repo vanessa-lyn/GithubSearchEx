@@ -17,6 +17,7 @@ $(function ($) {
         , search = $('#search')
         , searchMessage = 'Input Github Search Term and Click Enter'
         , cachedObj = {}
+        , $popUpWrapper
         ;
 
     function initEventListeners() {
@@ -82,7 +83,7 @@ $(function ($) {
             generateResultsList();
         }
     }
-    
+
     //display number of results on page
     function displayResultsHeading() {
         var $resultsHeader = $('<h2/>', {
@@ -115,14 +116,92 @@ $(function ($) {
     }
 
     function showListingDetails() {
-        var current = $(this).attr('name')
-        , details = "Language: " + jsonData[current].language + "\n";
-        if (DEBUG) { console.log(jsonData[current]); }
+        var current = $(this).attr('name');
 
-        details += "Followers: " + jsonData[current].followers + "\n";
-        details += "Url: " + jsonData[current].url + "\n";
-        details += "Description: " + jsonData[current].description;
-        alert(details);
+        //this should only need to be build once then repurposed 
+        if (!$popUpWrapper) {
+            createPopUpBox();
+        }
+
+
+        $('body').prepend($popUpWrapper);
+        $popUpWrapper.hide();
+
+
+        var detailsList = $('<ul>', {
+            'class': 'details-list'
+        }); 
+        detailsList.append($('<li/>', {
+            'class': 'details-title',
+            text: jsonData[current].owner + ' / ' + jsonData[current].name
+        }))
+        .append($('<li/>', {
+            text: "Language: " + jsonData[current].language
+        }))
+        .append($('<li/>', {
+            text: "Followers: " + jsonData[current].followers
+        }))
+        .append($('<li/>', {
+            text: 'Url: ',
+            html: $('<a/>', {
+                href: jsonData[current].url,
+                text: jsonData[current].url,
+                'target': '_blank'
+            })
+        }))
+        .append($('<li/>', {
+            text: "Description: " + jsonData[current].description
+        }));
+
+        $('.popup').prepend(detailsList);
+
+        $popUpWrapper.show();
+
+        
+
+        // var details = $('<li/>', {
+        //     'class': 'details-title',
+        //     text: jsonData[current].owner + ' / ' + jsonData[current].name
+        // }))
+
+        // $('.details-list')
+        // .append($('<li/>', {
+        //     'class': 'details-title',
+        //     text: jsonData[current].owner + ' / ' + jsonData[current].name
+        // }))
+        // .append($('<li/>', {
+        //     text: "Language: " + jsonData[current].language
+        // }))
+        // .append($('<li/>', {
+        //     text: "Followers: " + jsonData[current].followers
+        // }))
+        // .append($('<li/>', {
+        //     text: 'Url: ',
+        // }).append($('<a/>', {
+        //     href: jsonData[current].url,
+        //     text: jsonData[current].url,
+        //     'target': '_blank'
+        // })))
+       
+        
+        
+    }
+
+    function createPopUpBox() {
+        $popUpWrapper = $('<div/>', {
+            'class': 'popup-wrapper',
+            html: $('<div/>', {
+                'class': 'popup',
+                 html: $('<button/>', {
+                    'class': 'close-btn',
+                    text: 'Close',
+                    click: function(){
+                        $('.details-list').remove();
+                        $popUpWrapper.hide();
+                    }
+                })
+            })
+        });
     }
 
     initEventListeners();
