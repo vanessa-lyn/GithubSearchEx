@@ -26,12 +26,12 @@ body {
     padding: 0;
 }
 
-.resultsList .list-header{
+.results-list .list-header{
     font-weight:bold;
     padding: 1em;
 }
 
-.resultsList .listing {
+.results-list .listing {
     padding: .5em;
     cursor: pointer;
     text-decoration: underline;

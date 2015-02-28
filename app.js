@@ -1,4 +1,4 @@
-/*jslint browser: true, devel: true, white: true */
+/*jslint browser: true, devel: true, unparam: true, node: true, white: true */
 /*global $, jQuery, alert*/
 
 $(function ($) {
@@ -9,7 +9,7 @@ $(function ($) {
     $('head').append("<link href='styles.css' rel='stylesheet' type='text/css'>");
     /////////////////////
 
-    var DEBUG = true
+    var DEBUG = false
         , gitKeyword
         , jsonData
         , saved = false
@@ -100,7 +100,7 @@ $(function ($) {
     }
 
     function generateResultsList(){
-        var $resultsList = $('<ul/>', {'class': 'resultsList'})
+        var $resultsList = $('<ul/>', {'class': 'results-list'})
             .append( $('<li/>', { 'class': 'list-header',  text: 'Author / Repo' }) );
 
         $.each(jsonData, function (index) {
@@ -118,16 +118,14 @@ $(function ($) {
     function showListingDetails() {
         var current = $(this).attr('name');
 
-        //this should only need to be build once then repurposed 
+        //this should only need to be built once then repurposed 
         if (!$popUpWrapper) {
             createPopUpBox();
         }
-
-
         $('body').prepend($popUpWrapper);
         $popUpWrapper.hide();
 
-
+        //create the details list
         var detailsList = $('<ul>', {
             'class': 'details-list'
         }); 
@@ -153,41 +151,14 @@ $(function ($) {
             text: "Description: " + jsonData[current].description
         }));
 
+        //then add to the DOM
         $('.popup').prepend(detailsList);
 
-        $popUpWrapper.show();
-
-        
-
-        // var details = $('<li/>', {
-        //     'class': 'details-title',
-        //     text: jsonData[current].owner + ' / ' + jsonData[current].name
-        // }))
-
-        // $('.details-list')
-        // .append($('<li/>', {
-        //     'class': 'details-title',
-        //     text: jsonData[current].owner + ' / ' + jsonData[current].name
-        // }))
-        // .append($('<li/>', {
-        //     text: "Language: " + jsonData[current].language
-        // }))
-        // .append($('<li/>', {
-        //     text: "Followers: " + jsonData[current].followers
-        // }))
-        // .append($('<li/>', {
-        //     text: 'Url: ',
-        // }).append($('<a/>', {
-        //     href: jsonData[current].url,
-        //     text: jsonData[current].url,
-        //     'target': '_blank'
-        // })))
-       
-        
-        
+        $popUpWrapper.show();        
     }
 
     function createPopUpBox() {
+        //since I can't touch the html, I'm creating the popup box here to insert into the DOM
         $popUpWrapper = $('<div/>', {
             'class': 'popup-wrapper',
             html: $('<div/>', {
